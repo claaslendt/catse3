@@ -1,7 +1,7 @@
 # Composite activity type and stride-specific energy expenditure estimation (CATSE³)
 CATSE³ represents an explorative approach to estimate energy expenditure based on raw data from a single thigh-worn accelerometer. CATSE³ combines an activity classification model with a subsequent stride-specific energy estimation approach for walking, running and cycling. The overall approach was inspired by earlier research, especially by Patrick Slade et al. [[Paper](https://doi.org/10.1038/s41467-021-24173-x)] and Mael Garnotel and Thomas Bastian [[Paper](https://doi.org/10.1152%2Fjapplphysiol.00556.2017)].
 
-
+![CATSE³ processing pipeline](figures/pipeline.jpg)
 
 ## 🚵🏽‍♀️ Free-living validation
 We are currently looking for datasets comprising multi-day thigh-worn accelerometer data (50Hz+) and overall energy expenditure assessed using doubly labeled water as the reference. Please do get in touch, if you have access to such data.
