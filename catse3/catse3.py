@@ -14,7 +14,7 @@ def reshape_acc(df, seq_len=400):
     '''Reshape the accelerometer time series data to (n_seq, 400, 3)'''
 
     # assert df is a pandas df or polars df
-    assert isinstance(df, (pd.DataFrame, pl.DataFrame)), "Input must be a pandas or polars dataframe."
+    assert isinstance(df, (pd.DataFrame, pl.DataFrame)), 'Input must be a pandas or polars dataframe.'
 
     # if acc is a pandas dataframe, convert to numpy array
     if isinstance(df, pd.DataFrame):
@@ -27,8 +27,8 @@ def reshape_acc(df, seq_len=400):
 
     return acc
 
-def classify_act(df, model="Lendt_2024", str_label=True):
-    """
+def classify_act(df, model='Lendt_2024', str_label=True, filt_cycling=True):
+    '''
     This function classifies the activity type based on the accelerometer data.
     
     Input:
@@ -38,14 +38,27 @@ def classify_act(df, model="Lendt_2024", str_label=True):
     Output:
     predictions: activity type predictions
     
-    """
+    '''
     
-    if model == "Lendt_2024":
+    if model == 'Lendt_2024':
         model = load_model('models/CNN_BiLSTM_f1.keras', compile=False)
 
     acc = reshape_acc(df, seq_len=400)
     predictions = model.predict(acc / 8, verbose=0)
     predictions = np.argmax(predictions, axis=1)
+
+    if filt_cycling:
+        # create a new vector 'cycling' with the same length as predictions
+        cycling = np.zeros(len(predictions))
+        cycling = np.where(predictions == 4, 1, 0)
+
+        # perform a moving average with a window size of 5 (equals 20 seconds with 4s per prediction)
+        cycling_filt = np.convolve(cycling, np.ones(10)/10, mode='same')
+        cycling_filt = np.where(cycling_filt >= 0.5, 1, 0)
+        cycling_filt = np.where(cycling_filt < 0.5, 0, 1)
+
+        # set predictions to 4 if cycling_filt == 1
+        predictions = np.where(cycling_filt == 1, 4, predictions)
 
     if str_label:
 
@@ -82,13 +95,13 @@ def classify_act(df, model="Lendt_2024", str_label=True):
     return df
 
 def create_sequences(acc, act):
-    """
+    '''
     Create sequences of the same uninterrupted activity.
     Each activity in the act array corresponds to a row in the acc array.
 
     The output should be a list of lists, where each list contains the accelerometer data of a single activity block.
 
-    """
+    '''
     
     acc = reshape_acc(acc, seq_len=400)
 
@@ -112,7 +125,7 @@ def create_sequences(acc, act):
     return acc_seq, act_seq
 
 def stride_segmentation(acc_seq, activity_seq, num_bins=30):
-    """
+    '''
     This function segments the accelerometer data into strides based on the activity type.
     
     Input:
@@ -123,7 +136,7 @@ def stride_segmentation(acc_seq, activity_seq, num_bins=30):
     Output:
     resampled_splits: segmented accelerometer data (3D array, shape: [m, num_bins, 3])
     
-    """
+    '''
 
     splits_f = []
     activity_f = []
@@ -196,7 +209,7 @@ def stride_segmentation(acc_seq, activity_seq, num_bins=30):
     return splits_f, activity_f, peaks_f
 
 def stride_EE_estimation(strides, act, EE_model):
-    """
+    '''
     Estimate the energy expenditure (EE) based on the accelerometer data.
     
     Input:
@@ -207,7 +220,7 @@ def stride_EE_estimation(strides, act, EE_model):
     Output:
     EE: estimated energy expenditure
     
-    """
+    '''
 
     # check if EE_estimator is a regression model
     if (type(EE_model)) == sm.regression.linear_model.RegressionResultsWrapper:
@@ -235,7 +248,7 @@ def stride_EE_estimation(strides, act, EE_model):
     return EE_strides
 
 def reg_EE_estimation(acc, act, EE_model):
-    """
+    '''
     Estimate the energy expenditure (EE in kcal/min/kg) based on the accelerometer data.
     
     Input:
@@ -246,7 +259,7 @@ def reg_EE_estimation(acc, act, EE_model):
     Output:
     EE: estimated energy expenditure
     
-    """
+    '''
 
     if act == 'sitting':
         act = 'standing'
