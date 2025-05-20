@@ -13,4 +13,4 @@ Lendt, C., Hansen, N., Froböse, I. et al. Composite activity type and stride-sp
 Most of the underlying data is openly accessible as part of the papers Zenodo repository: https://doi.org/10.5281/zenodo.13477128.
 
 ## 💸 Funding
-CATSE³ is based upon the results of the research project 'Estimation of activity induced energy expenditure using thigh-worn accelerometry and machine learning approaches'. This project was funded by the Internal Research Funds of the German Sport  University Cologne, grant agreement number L-11-10011-267-121010. Claas Lendt was further supported by a fellowship of the German Academic Exchange  Service (DAAD).
+CATSE³ is based upon the results of the research project 'Estimation of activity induced energy expenditure using thigh-worn accelerometry and machine learning approaches'. This project was funded by the Internal Research Funds of the German Sport University Cologne. Claas Lendt was further supported by a fellowship of the German Academic Exchange Service (DAAD).
